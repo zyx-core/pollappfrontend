@@ -93,6 +93,24 @@ import { AuthService } from '../../core/services/auth.service';
               </div>
             </div>
 
+            <!-- Confirm Password -->
+            <div class="field-group">
+              <label class="field-label">Confirm Password</label>
+              <div class="field-input-wrap" [class.field-error]="registerForm.get('confirmPassword')?.invalid && registerForm.get('confirmPassword')?.touched">
+                <mat-icon class="field-icon">lock_outline</mat-icon>
+                <input
+                  [type]="hideConfirmPassword() ? 'password' : 'text'"
+                  formControlName="confirmPassword"
+                  id="register-confirm-password"
+                  placeholder="Re-enter your password"
+                  class="field-input"
+                  autocomplete="new-password">
+                <button type="button" class="field-eye-btn" (click)="hideConfirmPassword.set(!hideConfirmPassword())">
+                  <mat-icon>{{ hideConfirmPassword() ? 'visibility_off' : 'visibility' }}</mat-icon>
+                </button>
+              </div>
+            </div>
+
             <!-- Submit -->
             <button
               type="submit"
@@ -313,12 +331,14 @@ export class RegisterComponent {
   registerForm: FormGroup;
   isLoading = signal<boolean>(false);
   hidePassword = signal<boolean>(true);
+  hideConfirmPassword = signal<boolean>(true);
 
   constructor() {
     this.registerForm = this.fb.group({
-      name: ['', [Validators.required, Validators.minLength(2)]],
+      name: ['', [Validators.required, Validators.minLength(3)]],
       email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(6)]]
+      password: ['', [Validators.required, Validators.minLength(8)]],
+      confirmPassword: ['', [Validators.required]]
     });
   }
 
@@ -337,9 +357,11 @@ export class RegisterComponent {
         },
         error: (err) => {
           this.isLoading.set(false);
-          this.snackBar.open(err.message || 'Registration failed.', 'Close', { duration: 4000 });
+          const msg = err.error?.message || err.error?.errors?.join(', ') || 'Registration failed.';
+          this.snackBar.open(msg, 'Close', { duration: 4000 });
         }
       });
     }
   }
 }
+

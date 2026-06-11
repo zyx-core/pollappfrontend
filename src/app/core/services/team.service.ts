@@ -8,7 +8,7 @@ import { ApiResponse, Team, CreateTeam } from '../models/api.models';
 })
 export class TeamService {
   private http = inject(HttpClient);
-  private apiUrl = 'http://localhost:5000/api/teams';
+  private apiUrl = '/api/teams';
 
   getAllTeams(): Observable<ApiResponse<Team[]>> {
     return this.http.get<ApiResponse<Team[]>>(this.apiUrl);

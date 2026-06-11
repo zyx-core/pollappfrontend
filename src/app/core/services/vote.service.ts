@@ -8,7 +8,7 @@ import { ApiResponse, Vote, VoteResult, VoterDetails } from '../models/api.model
 })
 export class VoteService {
   private http = inject(HttpClient);
-  private apiUrl = 'http://localhost:5000/api/votes';
+  private apiUrl = '/api/votes';
 
   castVote(teamId: number): Observable<ApiResponse<Vote>> {
     return this.http.post<ApiResponse<Vote>>(this.apiUrl, { teamId });

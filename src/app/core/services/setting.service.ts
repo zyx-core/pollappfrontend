@@ -8,7 +8,7 @@ import { ApiResponse, Setting } from '../models/api.models';
 })
 export class SettingService {
   private http = inject(HttpClient);
-  private apiUrl = 'http://localhost:5000/api/settings';
+  private apiUrl = '/api/settings';
 
   getSettings(): Observable<ApiResponse<Setting>> {
     return this.http.get<ApiResponse<Setting>>(this.apiUrl);
