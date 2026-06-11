@@ -1,83 +1,227 @@
-@import '@angular/material/prebuilt-themes/indigo-pink.css';
-
+/* ============================================================
+   GLOBAL DESIGN TOKENS (Matte Slate & Electric Blue)
+   ============================================================ */
 :root {
-  --primary-color: #0f5132;
-  --secondary-color: #198754;
-  --accent-color: #ffc107;
-  --dark-bg: #0b0f19;
-  --dark-surface: #111827;
-  --dark-card: #1f2937;
-  --light-bg: #f3f4f6;
-  --light-surface: #ffffff;
-  --light-card: #ffffff;
-  --text-dark: #1f2937;
-  --text-light: #f9fafb;
+  /* Matte Slate Backgrounds */
+  --bg-base: #0f172a;      /* Slate 900 - App background */
+  --bg-surface: #1e293b;   /* Slate 800 - Cards, dialogs, nav */
+  --bg-elevated: #334155;  /* Slate 700 - Hover states, borders */
+
+  /* Text Colors */
+  --text-primary: #f8fafc; /* Slate 50 - Main headings */
+  --text-body: #cbd5e1;    /* Slate 300 - Standard text */
+  --text-muted: #94a3b8;   /* Slate 400 - Subtitles, metadata */
+
+  /* Brand Accents */
+  --brand-primary: #3b82f6; /* Blue 500 - Main accent */
+  --brand-hover: #2563eb;   /* Blue 600 */
+  --brand-active: #1d4ed8;  /* Blue 700 */
+
+  /* Semantic Colors */
+  --color-success: #10b981; /* Emerald 500 */
+  --color-warning: #f59e0b; /* Amber 500 */
+  --color-danger: #ef4444;  /* Red 500 */
+
+  /* Shadows (Solid / Crisp) */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.5);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.6);
+  --shadow-brand: 0 4px 14px 0 rgba(59, 130, 246, 0.39);
+
+  /* Radius */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
 }
 
-body {
+/* ============================================================
+   BASE STYLES
+   ============================================================ */
+html, body {
   margin: 0;
-  font-family: 'Outfit', 'Inter', Roboto, "Helvetica Neue", sans-serif;
-  transition: background-color 0.3s ease, color 0.3s ease;
-}
-
-
-body.light-theme {
-  background-color: var(--light-bg);
-  color: var(--text-dark);
-
-  .app-container {
-    background-color: var(--light-bg);
-  }
-
-  .nav-header {
-    background-color: var(--light-surface);
-    border-bottom: 1px solid #e5e7eb;
-  }
-
-  .mat-mdc-card {
-    background-color: var(--light-card) !important;
-    color: var(--text-dark) !important;
-  }
-}
-
-/* Custom styles */
-.pitch-gradient {
-  background: linear-gradient(135deg, #0f5132 0%, #062214 100%);
-}
-
-.gold-accent {
-  color: var(--accent-color) !important;
-}
-
-.card-hover {
-  transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
-  &:hover {
-    transform: translateY(-6px);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15) !important;
-  }
-}
-
-.skeleton-box {
-  display: inline-block;
-  height: 100%;
+  padding: 0;
   width: 100%;
-  background: linear-gradient(90deg, #e5e7eb 25%, #f3f4f6 50%, #e5e7eb 75%);
-  background-size: 200% 100%;
-  animation: loading-animation 1.5s infinite;
+  height: 100%;
+  background-color: var(--bg-base);
+  color: var(--text-body);
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Outfit', system-ui, sans-serif;
+  color: var(--text-primary);
+  margin: 0 0 1rem 0;
+}
+
+p {
+  line-height: 1.6;
+}
+
+a {
+  color: var(--brand-primary);
+  text-decoration: none;
+  transition: color 0.2s ease;
+  
+  &:hover {
+    color: var(--brand-hover);
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: var(--bg-base); }
+::-webkit-scrollbar-thumb {
+  background: var(--bg-elevated);
   border-radius: 4px;
 }
+::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
 
-
-@keyframes loading-animation {
-  0% { background-position: 200% 0; }
-  100% { background-position: -200% 0; }
+/* Selection */
+::selection {
+  background: var(--brand-primary);
+  color: #fff;
 }
 
-.text-gold {
-  color: #fbbf24;
+/* ============================================================
+   ANGULAR MATERIAL OVERRIDES (Flat Matte Style)
+   ============================================================ */
+
+/* Inputs */
+.mat-mdc-text-field-wrapper {
+  background-color: var(--bg-surface) !important;
+  border: 1px solid var(--bg-elevated) !important;
+  border-radius: var(--radius-md) !important;
 }
 
-.bg-gold {
-  background-color: #fbbf24;
-  color: #000000;
+.mdc-text-field--filled:not(.mdc-text-field--disabled) {
+  background-color: var(--bg-surface) !important;
+}
+
+.mdc-line-ripple::before, .mdc-line-ripple::after {
+  display: none !important;
+}
+
+/* Cards */
+.mat-mdc-card {
+  background-color: var(--bg-surface) !important;
+  border: 1px solid var(--bg-elevated) !important;
+  border-radius: var(--radius-lg) !important;
+  box-shadow: var(--shadow-sm) !important;
+  color: var(--text-body) !important;
+}
+
+/* Buttons */
+.mat-mdc-unelevated-button.mat-primary, 
+.mat-mdc-raised-button.mat-primary {
+  background-color: var(--brand-primary) !important;
+  color: #fff !important;
+  border-radius: var(--radius-md) !important;
+  box-shadow: var(--shadow-brand) !important;
+  letter-spacing: 0.5px !important;
+  font-weight: 600 !important;
+}
+
+/* Dialogs */
+.mat-mdc-dialog-container .mdc-dialog__surface {
+  background-color: var(--bg-surface) !important;
+  border: 1px solid var(--bg-elevated) !important;
+  border-radius: var(--radius-lg) !important;
+  color: var(--text-body) !important;
+}
+
+/* Snackbars */
+.mat-mdc-snack-bar-container .mdc-snackbar__surface {
+  background-color: var(--bg-elevated) !important;
+  color: var(--text-primary) !important;
+  border-radius: var(--radius-md) !important;
+}
+
+/* Menus */
+.mat-mdc-menu-panel {
+  background-color: var(--bg-surface) !important;
+  border: 1px solid var(--bg-elevated) !important;
+  border-radius: var(--radius-md) !important;
+}
+
+.mat-mdc-menu-item {
+  color: var(--text-body) !important;
+  &:hover { background-color: var(--bg-elevated) !important; }
+}
+
+/* ============================================================
+   UTILITY CLASSES
+   ============================================================ */
+
+.text-primary { color: var(--text-primary); }
+.text-body { color: var(--text-body); }
+.text-muted { color: var(--text-muted); }
+
+.bg-base { background-color: var(--bg-base); }
+.bg-surface { background-color: var(--bg-surface); }
+
+.flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Flat Badges */
+.badge-solid {
+  padding: 4px 10px;
+  border-radius: var(--radius-sm);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.badge-primary { background-color: var(--brand-primary); color: #fff; }
+.badge-success { background-color: var(--color-success); color: #fff; }
+.badge-warning { background-color: var(--color-warning); color: #fff; }
+.badge-danger { background-color: var(--color-danger); color: #fff; }
+
+/* Flat Buttons */
+.btn-flat {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 20px;
+  border-radius: var(--radius-md);
+  font-family: 'Outfit', sans-serif;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s ease;
+  text-decoration: none;
+}
+
+.btn-flat-primary {
+  background-color: var(--brand-primary);
+  color: #fff;
+  box-shadow: var(--shadow-sm);
+  
+  &:hover {
+    background-color: var(--brand-hover);
+    box-shadow: var(--shadow-md);
+    transform: translateY(-1px);
+  }
+}
+
+.btn-flat-secondary {
+  background-color: var(--bg-elevated);
+  color: var(--text-primary);
+  border: 1px solid rgba(255,255,255,0.05);
+
+  &:hover {
+    background-color: #475569;
+  }
 }

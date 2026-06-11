@@ -1,6 +1,5 @@
 import { Component, inject, OnInit, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
@@ -16,7 +15,6 @@ import { VoteResult, Vote, Setting } from '../../core/models/api.models';
   standalone: true,
   imports: [
     CommonModule,
-    RouterLink,
     MatCardModule,
     MatIconModule,
     MatProgressBarModule,
@@ -26,9 +24,9 @@ import { VoteResult, Vote, Setting } from '../../core/models/api.models';
   template: `
     <div style="padding: 24px; max-width: 800px; margin: 0 auto; width: 100%;">
       <!-- Header -->
-      <div style="margin-bottom: 32px; text-align: center;">
-        <h2 style="font-family: 'Outfit'; font-size: 2.2rem; font-weight: 800; margin: 0;">Poll Standings</h2>
-        <p style="opacity: 0.7; margin: 4px 0 0 0;">Observe vote rankings and statistics across all teams.</p>
+      <div style="margin-bottom: 40px; text-align: center;">
+        <h2 style="font-size: 2.5rem; font-weight: 800; margin: 0;">Aggregate Analytics</h2>
+        <p style="color: var(--text-muted); margin: 8px 0 0 0;">View real-time standings and performance metrics across all entities.</p>
       </div>
 
       <!-- Loading State -->
@@ -40,13 +38,13 @@ import { VoteResult, Vote, Setting } from '../../core/models/api.models';
         
         <!-- Results Hidden State -->
         <div *ngIf="!isResultsVisible(); else visibleState" 
-             style="text-align: center; padding: 48px 24px; border: 1px solid rgba(128,128,128,0.15); border-radius: 16px;">
-          <mat-icon style="font-size: 64px; width: 64px; height: 64px; color: #f59e0b; margin-bottom: 16px;">visibility_off</mat-icon>
-          <h3 style="font-family: 'Outfit'; font-size: 1.6rem; font-weight: bold; margin: 0 0 8px 0;">Standings Are Locked</h3>
-          <p style="opacity: 0.7; max-width: 400px; margin: 0 auto 24px auto; line-height: 1.5;">
-            The poll results remain hidden by default during active voting. Once the administrator publishes the final results, you can view the complete ranks here.
+             style="text-align: center; padding: 48px 24px; border: 1px solid var(--bg-elevated); border-radius: var(--radius-lg); background-color: var(--bg-surface);">
+          <mat-icon style="font-size: 64px; width: 64px; height: 64px; color: var(--color-warning); margin-bottom: 24px;">visibility_off</mat-icon>
+          <h3 style="font-size: 1.6rem; font-weight: 800; margin: 0 0 12px 0;">Metrics are Encrypted</h3>
+          <p style="color: var(--text-muted); max-width: 450px; margin: 0 auto 24px auto;">
+            The analytics remain hidden during active data collection. Once the administration publishes the final results, you can view the complete ranks here.
           </p>
-          <div style="display: inline-block; padding: 8px 16px; border-radius: 20px; background-color: rgba(245,158,11,0.1); color: #b45309; font-size: 0.85rem; font-weight: 600;">
+          <div style="display: inline-block; padding: 8px 16px; border-radius: var(--radius-sm); background-color: rgba(245,158,11,0.1); color: var(--color-warning); font-size: 0.85rem; font-weight: 600;">
             Awaiting Admin Publication
           </div>
         </div>
@@ -56,56 +54,57 @@ import { VoteResult, Vote, Setting } from '../../core/models/api.models';
           
           <!-- Live Preview Banner for Admin -->
           <div *ngIf="!settings()?.isResultPublished && authService.isAdmin()" 
-               style="margin-bottom: 24px; padding: 12px 16px; border-radius: 8px; font-size: 0.85rem; background-color: rgba(59,130,246,0.1); color: #1d4ed8; display: flex; align-items: center; gap: 8px; font-weight: 500;">
+               style="margin-bottom: 24px; padding: 16px; border-radius: var(--radius-md); font-size: 0.9rem; background-color: rgba(59,130,246,0.1); color: var(--brand-primary); display: flex; align-items: center; gap: 12px; font-weight: 600;">
             <mat-icon>visibility</mat-icon>
-            <span>Live Standings Preview: Only you (Admin) can view these standings since results are not yet published.</span>
+            <span>Live Standings Preview: Only administrators can view these metrics since results are not yet public.</span>
           </div>
 
           <!-- Total Votes Tally -->
-          <div style="background-color: var(--primary-color); color: white; padding: 24px; border-radius: 12px; margin-bottom: 28px; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
-            <span style="font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1.5px; opacity: 0.8; font-weight: bold;">Aggregate Poll Volume</span>
-            <h3 style="font-family: 'Outfit'; font-size: 3rem; font-weight: 800; margin: 4px 0 0 0; line-height: 1;">{{ sumVotes() }}</h3>
-            <p style="margin: 4px 0 0 0; font-size: 0.85rem; opacity: 0.7;">Active votes submitted by registered fans</p>
+          <div style="background-color: var(--brand-primary); color: white; padding: 32px; border-radius: var(--radius-lg); margin-bottom: 32px; text-align: center; box-shadow: var(--shadow-brand);">
+            <span style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; font-weight: 700; opacity: 0.9;">Aggregate Interaction Volume</span>
+            <h3 style="font-family: 'Outfit'; font-size: 3.5rem; font-weight: 900; margin: 8px 0 0 0; line-height: 1;">{{ sumVotes() }}</h3>
+            <p style="margin: 8px 0 0 0; font-size: 0.9rem; opacity: 0.8;">Total selections submitted by active users</p>
           </div>
 
           <!-- Leaderboard Grid -->
           <div style="display: flex; flex-direction: column; gap: 16px;">
             <mat-card *ngFor="let result of results(); let i = index" 
-                      style="padding: 16px 20px; border-radius: 12px; border: 1px solid rgba(128,128,128,0.1); display: flex; flex-direction: column; gap: 8px;"
-                      [style.background-color]="isLeader(i) ? 'rgba(251,191,36,0.05)' : ''"
-                      [style.border-color]="isLeader(i) ? '#fbbf24' : 'rgba(128,128,128,0.1)'">
+                      style="padding: 24px; border-radius: var(--radius-lg); border: 1px solid var(--bg-elevated); display: flex; flex-direction: column; gap: 16px;"
+                      [style.background-color]="isLeader(i) ? 'var(--brand-primary)' : 'var(--bg-surface)'"
+                      [style.border-color]="isLeader(i) ? 'var(--brand-primary)' : 'var(--bg-elevated)'"
+                      [style.color]="isLeader(i) ? '#fff' : 'var(--text-primary)'">
               
-              <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;">
+              <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px;">
                 <!-- Team Metadata -->
                 <div style="display: flex; align-items: center; gap: 16px;">
-                  <span style="font-family: 'Outfit'; font-size: 1.3rem; font-weight: 800; min-width: 28px; opacity: 0.8;">
+                  <span style="font-family: 'Outfit'; font-size: 1.5rem; font-weight: 800; min-width: 36px; opacity: 0.9;">
                     #{{ i + 1 }}
                   </span>
-                  <img [src]="result.flagUrl" [alt]="result.teamName" style="width: 44px; height: 30px; object-fit: cover; border-radius: 4px; border: 1px solid rgba(128,128,128,0.2);">
+                  <img [src]="result.flagUrl" [alt]="result.teamName" style="width: 54px; height: 36px; object-fit: cover; border-radius: var(--radius-sm); border: 1px solid rgba(255,255,255,0.1);">
                   <div>
-                    <span style="font-weight: 700; font-size: 1.1rem; display: flex; align-items: center; gap: 8px;">
+                    <span style="font-weight: 800; font-size: 1.15rem; display: flex; align-items: center; gap: 8px;">
                       {{ result.teamName }}
-                      <span *ngIf="isLeader(i)" class="gold-accent" title="Current Leader" style="display: flex; align-items: center;">
-                        <mat-icon style="font-size: 18px; width: 18px; height: 18px;">stars</mat-icon>
+                      <span *ngIf="isLeader(i)" title="Current Leader" style="display: flex; align-items: center; color: #fff;">
+                        <mat-icon style="font-size: 20px; width: 20px; height: 20px;">emoji_events</mat-icon>
                       </span>
                       <!-- Own Vote Tag -->
-                      <span *ngIf="isUserVote(result.teamId)" style="background-color: var(--primary-color); color: white; padding: 2px 8px; border-radius: 10px; font-size: 0.7rem; font-weight: bold;">
-                        Your Vote
+                      <span *ngIf="isUserVote(result.teamId)" style="background-color: rgba(255,255,255,0.2); color: inherit; padding: 4px 10px; border-radius: var(--radius-sm); font-size: 0.75rem; font-weight: 700;">
+                        Your Selection
                       </span>
                     </span>
-                    <span style="font-size: 0.8rem; opacity: 0.6;">Code: {{ result.countryCode }}</span>
+                    <span style="font-size: 0.85rem; opacity: 0.7;">Code: {{ result.countryCode }}</span>
                   </div>
                 </div>
 
                 <!-- Counts & Percent -->
                 <div style="text-align: right;">
-                  <span style="font-weight: 800; font-size: 1.15rem; font-family: 'Outfit';">{{ result.voteCount }} {{ result.voteCount === 1 ? 'vote' : 'votes' }}</span>
-                  <div style="font-size: 0.85rem; opacity: 0.7; font-weight: 500;">{{ result.percentage }}%</div>
+                  <span style="font-weight: 800; font-size: 1.25rem; font-family: 'Outfit';">{{ result.voteCount }}</span>
+                  <div style="font-size: 0.85rem; opacity: 0.8; font-weight: 600;">{{ result.percentage }}%</div>
                 </div>
               </div>
 
               <!-- Progress bar representation -->
-              <mat-progress-bar mode="determinate" [value]="result.percentage" color="primary" style="height: 6px; border-radius: 3px;"></mat-progress-bar>
+              <mat-progress-bar mode="determinate" [value]="result.percentage" color="primary" style="height: 8px; border-radius: 4px;" [style.opacity]="isLeader(i) ? '0.5' : '1'"></mat-progress-bar>
             </mat-card>
           </div>
 
@@ -148,7 +147,6 @@ export class ResultsComponent implements OnInit {
           this.settings.set(settingRes.data);
         }
 
-        // Load results
         const isAdmin = this.authService.isAdmin();
         const resultsVisible = this.settings()?.isResultPublished || isAdmin;
 
@@ -168,7 +166,7 @@ export class ResultsComponent implements OnInit {
       },
       error: () => {
         this.isLoading.set(false);
-        this.snackBar.open('Error loading standings data.', 'Close', { duration: 4000 });
+        this.snackBar.open('Error loading data.', 'Close', { duration: 4000 });
       }
     });
   }

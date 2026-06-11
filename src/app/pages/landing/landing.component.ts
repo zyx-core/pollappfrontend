@@ -1,8 +1,6 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
-import { MatButtonModule } from '@angular/material/button';
-import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { AuthService } from '../../core/services/auth.service';
 import { SettingService } from '../../core/services/setting.service';
@@ -11,95 +9,271 @@ import { Setting } from '../../core/models/api.models';
 @Component({
   selector: 'app-landing',
   standalone: true,
-  imports: [CommonModule, RouterLink, MatButtonModule, MatCardModule, MatIconModule],
+  imports: [CommonModule, RouterLink, MatIconModule],
   template: `
-    <div style="display: flex; flex-direction: column; min-height: calc(100vh - 64px);">
-      <!-- Hero Banner -->
-      <section class="pitch-gradient" style="color: white; padding: 64px 24px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 20px;">
-        <mat-icon style="font-size: 80px; width: 80px; height: 80px;" class="gold-accent">emoji_events</mat-icon>
-        <h1 style="font-family: 'Outfit'; font-size: 3.5rem; font-weight: 800; line-height: 1.1; margin: 0; letter-spacing: -1px;">
-          FIFA WORLD CUP <br>
-          <span class="gold-accent">POLLING SYSTEM</span>
-        </h1>
-        <p style="font-size: 1.25rem; max-width: 600px; margin: 0; opacity: 0.9; font-weight: 300;">
-          Make your voice heard! Vote for your favorite national team, track live polling standings, and see who reigns supreme.
-        </p>
+    <div class="landing-root">
+      
+      <!-- HERO SECTION (Solid Matte) -->
+      <section class="hero-section">
+        <div class="hero-content">
+          <div class="hero-badge">
+            <span class="dot"></span>
+            {{ statusText() }}
+          </div>
+          
+          <h1 class="hero-title">
+            Global Voting<br>
+            <span class="hero-title-accent">Ecosystem</span>
+          </h1>
+          
+          <p class="hero-subtitle">
+            The secure, flat-design voting platform. Cast your vote, track live analytics, and view results with absolute transparency.
+          </p>
 
-        <!-- Dynamic Status Alerts -->
-        <div style="margin: 16px 0; padding: 12px 24px; border-radius: 30px; background-color: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); font-weight: 500; display: flex; align-items: center; gap: 8px;">
-          <span class="gold-accent" style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; background-color: #fbbf24;" [style.background-color]="statusColor()"></span>
-          {{ statusText() }}
-        </div>
+          <div class="hero-cta-group">
+            <ng-container *ngIf="authService.isAuthenticated(); else authButtons">
+              <a routerLink="/dashboard" class="btn-flat btn-flat-primary">
+                <mat-icon>dashboard</mat-icon> Go to Dashboard
+              </a>
+              <a routerLink="/teams" class="btn-flat btn-flat-secondary">
+                <mat-icon>public</mat-icon> View Entities
+              </a>
+            </ng-container>
+            <ng-template #authButtons>
+              <a routerLink="/login" class="btn-flat btn-flat-primary">
+                <mat-icon>login</mat-icon> Sign In
+              </a>
+              <a routerLink="/register" class="btn-flat btn-flat-secondary">
+                <mat-icon>person_add</mat-icon> Create Account
+              </a>
+            </ng-template>
+          </div>
 
-        <div style="display: flex; align-items: center; justify-content: center; gap: 16px; margin-top: 16px; flex-wrap: wrap;">
-          <ng-container *ngIf="authService.isAuthenticated(); else authButtons">
-            <a routerLink="/dashboard" style="text-decoration: none;">
-              <button style="background-color: #fbbf24; color: #062214; border: none; padding: 12px 28px; font-size: 1.05rem; font-family: 'Outfit'; font-weight: bold; border-radius: 30px; cursor: pointer; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.15);">
-                Go to Dashboard <mat-icon style="font-size: 20px; width: 20px; height: 20px;">arrow_forward</mat-icon>
-              </button>
-            </a>
-          </ng-container>
-          <ng-template #authButtons>
-            <a routerLink="/login" style="text-decoration: none;">
-              <button style="background-color: #fbbf24; color: #062214; border: none; padding: 12px 28px; font-size: 1.05rem; font-family: 'Outfit'; font-weight: 700; border-radius: 30px; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.15);">
-                Sign In to Vote
-              </button>
-            </a>
-            <a routerLink="/register" style="text-decoration: none;">
-              <button style="background-color: transparent; color: white; border: 2px solid white; padding: 10px 26px; font-size: 1.05rem; font-family: 'Outfit'; font-weight: 700; border-radius: 30px; cursor: pointer;">
-                Create Account
-              </button>
-            </a>
-          </ng-template>
-        </div>
-      </section>
-
-      <!-- Info Cards -->
-      <section style="flex: 1; padding: 48px 24px; max-width: 1200px; margin: 0 auto; width: 100%;">
-        <h2 style="font-family: 'Outfit'; font-size: 2.2rem; font-weight: 800; text-align: center; margin-bottom: 36px; letter-spacing: -0.5px;">How It Works</h2>
-        
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px;">
-          <mat-card class="card-hover" style="padding: 24px; border-radius: 12px; border: 1px solid rgba(128,128,128,0.1);">
-            <mat-card-header style="margin-bottom: 16px;">
-              <mat-icon style="font-size: 40px; width: 40px; height: 40px; color: var(--primary-color);">how_to_reg</mat-icon>
-              <mat-card-title style="font-family: 'Outfit'; font-weight: bold; font-size: 1.3rem;">1. Secure Register</mat-card-title>
-            </mat-card-header>
-            <mat-card-content>
-              <p style="opacity: 0.8; line-height: 1.6;">Create an account with email verification and secure password hashes to join the official fan poll.</p>
-            </mat-card-content>
-          </mat-card>
-
-          <mat-card class="card-hover" style="padding: 24px; border-radius: 12px; border: 1px solid rgba(128,128,128,0.1);">
-            <mat-card-header style="margin-bottom: 16px;">
-              <mat-icon style="font-size: 40px; width: 40px; height: 40px; color: var(--primary-color);">sports_soccer</mat-icon>
-              <mat-card-title style="font-family: 'Outfit'; font-weight: bold; font-size: 1.3rem;">2. Cast & Modify Vote</mat-card-title>
-            </mat-card-header>
-            <mat-card-content>
-              <p style="opacity: 0.8; line-height: 1.6;">Browse competing nations and cast your vote. You can revoke or change your vote at any time before results are published.</p>
-            </mat-card-content>
-          </mat-card>
-
-          <mat-card class="card-hover" style="padding: 24px; border-radius: 12px; border: 1px solid rgba(128,128,128,0.1);">
-            <mat-card-header style="margin-bottom: 16px;">
-              <mat-icon style="font-size: 40px; width: 40px; height: 40px; color: var(--primary-color);">analytics</mat-icon>
-              <mat-card-title style="font-family: 'Outfit'; font-weight: bold; font-size: 1.3rem;">3. Official Standings</mat-card-title>
-            </mat-card-header>
-            <mat-card-content>
-              <p style="opacity: 0.8; line-height: 1.6;">Standings and vote counts remain encrypted and hidden. Once the administrator publishes results, the final rankings are revealed!</p>
-            </mat-card-content>
-          </mat-card>
+          <div class="hero-stats">
+            <div class="stat-item">
+              <div class="stat-num">12</div>
+              <div class="stat-label">Options</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-num">1</div>
+              <div class="stat-label">Vote Per User</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-num">Live</div>
+              <div class="stat-label">Analytics</div>
+            </div>
+          </div>
         </div>
       </section>
 
-      <!-- Footer -->
-      <footer style="padding: 24px; text-align: center; border-top: 1px solid rgba(128,128,128,0.1); font-size: 0.9rem; opacity: 0.7;">
-        &copy; 2026 FIFA World Cup Polling System. Built with ASP.NET Core & Angular.
+      <!-- HOW IT WORKS (Flat Cards) -->
+      <section class="how-section">
+        <div class="section-header">
+          <div class="section-eyebrow">WORKFLOW</div>
+          <h2 class="section-title">How It Works</h2>
+        </div>
+
+        <div class="how-grid">
+          <div class="how-card">
+            <div class="how-icon bg-blue"><mat-icon>how_to_reg</mat-icon></div>
+            <h3>1. Register</h3>
+            <p>Create a secure account to verify your identity and ensure unique voting rights.</p>
+          </div>
+          <div class="how-card">
+            <div class="how-icon bg-emerald"><mat-icon>how_to_vote</mat-icon></div>
+            <h3>2. Vote</h3>
+            <p>Browse options and cast a single vote. You can change it anytime before the deadline.</p>
+          </div>
+          <div class="how-card">
+            <div class="how-icon bg-amber"><mat-icon>insights</mat-icon></div>
+            <h3>3. Analyze</h3>
+            <p>View published standings and metrics once the administration reveals the results.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- FOOTER -->
+      <footer class="landing-footer">
+        <div class="footer-logo">
+          <mat-icon>assessment</mat-icon>
+          <span>Global <span>POLLS</span></span>
+        </div>
+        <p>© 2026 Global Polling Platform. Built with .NET Core & Angular.</p>
       </footer>
     </div>
   `,
   styles: [`
-    :host {
-      display: block;
+    :host { display: block; }
+
+    .landing-root {
+      display: flex;
+      flex-direction: column;
+      min-height: calc(100vh - 64px);
+    }
+
+    /* === HERO SECTION === */
+    .hero-section {
+      padding: 100px 24px;
+      text-align: center;
+      background-color: var(--bg-surface);
+      border-bottom: 1px solid var(--bg-elevated);
+      display: flex;
+      justify-content: center;
+    }
+
+    .hero-content {
+      max-width: 800px;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 16px;
+      border-radius: var(--radius-xl);
+      background-color: var(--bg-elevated);
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-bottom: 24px;
+
+      .dot {
+        width: 8px; height: 8px;
+        border-radius: 50%;
+        background-color: var(--color-success);
+      }
+    }
+
+    .hero-title {
+      font-size: clamp(2.5rem, 6vw, 4.5rem);
+      font-weight: 900;
+      line-height: 1.1;
+      margin-bottom: 16px;
+      letter-spacing: -1px;
+    }
+
+    .hero-title-accent {
+      color: var(--brand-primary);
+    }
+
+    .hero-subtitle {
+      font-size: 1.15rem;
+      color: var(--text-muted);
+      max-width: 600px;
+      margin: 0 auto 32px;
+    }
+
+    .hero-cta-group {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      margin-bottom: 60px;
+      flex-wrap: wrap;
+    }
+
+    .hero-stats {
+      display: flex;
+      justify-content: center;
+      gap: 48px;
+      flex-wrap: wrap;
+    }
+
+    .stat-item {
+      text-align: center;
+    }
+
+    .stat-num {
+      font-family: 'Outfit', sans-serif;
+      font-size: 2.5rem;
+      font-weight: 800;
+      color: var(--text-primary);
+    }
+
+    .stat-label {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    /* === HOW SECTION === */
+    .how-section {
+      padding: 80px 24px;
+      max-width: 1200px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    .section-header {
+      text-align: center;
+      margin-bottom: 48px;
+    }
+
+    .section-eyebrow {
+      color: var(--brand-primary);
+      font-weight: 700;
+      font-size: 0.8rem;
+      letter-spacing: 1.5px;
+      margin-bottom: 8px;
+    }
+
+    .section-title {
+      font-size: 2.2rem;
+      font-weight: 800;
+    }
+
+    .how-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 24px;
+    }
+
+    .how-card {
+      background-color: var(--bg-surface);
+      border: 1px solid var(--bg-elevated);
+      border-radius: var(--radius-lg);
+      padding: 32px;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+      &:hover {
+        transform: translateY(-4px);
+        box-shadow: var(--shadow-lg);
+        border-color: var(--brand-primary);
+      }
+
+      h3 { font-size: 1.25rem; font-weight: 700; margin-bottom: 12px; }
+      p { color: var(--text-muted); margin: 0; }
+    }
+
+    .how-icon {
+      width: 48px; height: 48px;
+      border-radius: var(--radius-md);
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 24px;
+      mat-icon { color: #fff; }
+    }
+
+    .bg-blue { background-color: var(--brand-primary); }
+    .bg-emerald { background-color: var(--color-success); }
+    .bg-amber { background-color: var(--color-warning); }
+
+    /* === FOOTER === */
+    .landing-footer {
+      text-align: center;
+      padding: 40px 24px;
+      border-top: 1px solid var(--bg-elevated);
+      background-color: var(--bg-surface);
+
+      .footer-logo {
+        display: flex; align-items: center; justify-content: center; gap: 8px;
+        font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 1.2rem;
+        margin-bottom: 12px;
+        span span { color: var(--brand-primary); }
+        mat-icon { color: var(--brand-primary); }
+      }
+
+      p { color: var(--text-muted); font-size: 0.85rem; margin: 0; }
     }
   `]
 })
@@ -108,8 +282,7 @@ export class LandingComponent implements OnInit {
   private settingService = inject(SettingService);
 
   settings = signal<Setting | null>(null);
-  statusText = signal<string>('Loading system status...');
-  statusColor = signal<string>('#9ca3af');
+  statusText = signal<string>('System Status Loading...');
 
   ngOnInit(): void {
     this.settingService.getSettings().subscribe({
@@ -120,8 +293,7 @@ export class LandingComponent implements OnInit {
         }
       },
       error: () => {
-        this.statusText.set('Offline - Connection error');
-        this.statusColor.set('#ef4444');
+        this.statusText.set('Offline');
       }
     });
   }
@@ -129,13 +301,10 @@ export class LandingComponent implements OnInit {
   private updateStatus(settings: Setting): void {
     if (settings.isResultPublished) {
       this.statusText.set('Final Standings Published');
-      this.statusColor.set('#10b981'); // Green
     } else if (settings.isVotingEnabled) {
       this.statusText.set('Voting is Open & Live');
-      this.statusColor.set('#3b82f6'); // Blue
     } else {
-      this.statusText.set('Voting is Closed');
-      this.statusColor.set('#f59e0b'); // Yellow/Orange
+      this.statusText.set('Voting is Currently Closed');
     }
   }
 }

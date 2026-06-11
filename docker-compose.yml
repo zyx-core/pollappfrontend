@@ -1,0 +1,51 @@
+version: '3.8'
+
+services:
+  db:
+    image: mysql:8.0
+    container_name: pollapp_mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: fifapoll
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - pollapp-net
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: pollapp_backend
+    environment:
+      - ConnectionStrings__DefaultConnection=Server=db;Port=3306;Database=fifapoll;Uid=root;Pwd=root;
+      - Jwt__Key=SuperSecretKeyForFifaPollApplicationWhichNeedsToBeAtLeast32Bytes
+      - Jwt__Issuer=FifaPollApi
+      - Jwt__Audience=FifaPollClients
+    ports:
+      - "5000:8080"
+    depends_on:
+      - db
+    networks:
+      - pollapp-net
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: pollapp_frontend
+    ports:
+      - "4200:80"
+    depends_on:
+      - backend
+    networks:
+      - pollapp-net
+
+volumes:
+  db_data:
+
+networks:
+  pollapp-net:
+    driver: bridge
